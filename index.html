@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#20264f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Snake">
+  <title>Snake</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="safe-probe" aria-hidden="true"></div>
+
+  <canvas id="game"></canvas>
+
+  <header id="hud">
+    <div class="best-badge" id="best-badge">
+      <span class="crown">👑</span>
+      <span class="best-value" id="hud-best">0</span>
+    </div>
+    <div class="score" id="hud-score">0</div>
+    <button class="gear" id="gear" aria-label="Settings">⚙︎</button>
+  </header>
+
+  <!-- On-screen D-pad (alternative to swipe) -->
+  <div id="dpad" aria-label="Direction pad">
+    <button class="dbtn up" data-dir="up" aria-label="Up">▲</button>
+    <button class="dbtn left" data-dir="left" aria-label="Left">◀</button>
+    <button class="dbtn right" data-dir="right" aria-label="Right">▶</button>
+    <button class="dbtn down" data-dir="down" aria-label="Down">▼</button>
+  </div>
+
+  <!-- Settings overlay -->
+  <div class="overlay" id="settings-overlay" hidden>
+    <div class="scrim" data-dismiss="settings"></div>
+    <div class="panel" role="dialog" aria-label="Settings">
+      <h2>Settings</h2>
+      <p class="panel-best" id="settings-best">Best score: 0</p>
+
+      <div class="row">
+        <span class="row-label">Speed</span>
+        <div class="segmented" id="difficulty-seg">
+          <button data-diff="calm">Calm</button>
+          <button data-diff="normal">Normal</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <span class="row-label">Walls</span>
+        <button class="toggle" id="toggle-walls" role="switch" aria-label="Solid walls"><span class="knob"></span></button>
+      </div>
+
+      <div class="row">
+        <span class="row-label">Sound</span>
+        <button class="toggle" id="toggle-sound" role="switch"><span class="knob"></span></button>
+      </div>
+
+      <div class="row">
+        <span class="row-label">Vibration</span>
+        <button class="toggle" id="toggle-haptics" role="switch"><span class="knob"></span></button>
+      </div>
+
+      <button class="btn primary" id="btn-new-game">New Game</button>
+      <button class="btn danger" id="btn-reset-best">Reset Best Score</button>
+      <a class="btn secondary" id="btn-back-hub" hidden>← Back to Games</a>
+      <button class="btn secondary" id="btn-close">Close</button>
+    </div>
+  </div>
+
+  <!-- Soft round-over overlay -->
+  <div class="overlay" id="gameover-overlay" hidden>
+    <div class="scrim"></div>
+    <div class="panel gameover" role="dialog" aria-label="Round over">
+      <div class="go-emoji" id="go-emoji">🐍</div>
+      <h2 id="go-title">Oops!</h2>
+      <p class="go-caption">Your score</p>
+      <div class="go-score" id="go-score">0</div>
+      <p class="go-best" id="go-best">👑 Best: 0</p>
+      <button class="btn primary" id="btn-play-again">Play Again</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
