@@ -1,6 +1,14 @@
 // Offline-first service worker. Caches the whole app shell so Snake runs with
 // no network at all once installed to the home screen.
-const CACHE = 'snake-v1';
+//
+// Update strategy:
+//  - Bump CACHE on every release. On install we precache the new shell and
+//    skipWaiting(); on activate we delete ALL old caches and claim clients.
+//  - Navigations are network-first (so a fresh index.html is fetched when
+//    online, falling back to cache offline). Other same-origin assets are
+//    cache-first against the versioned cache. The paired registration in
+//    main.js reloads the page on controllerchange so users get the new build.
+const CACHE = 'snake-v2';
 
 const ASSETS = [
   './',
@@ -14,6 +22,7 @@ const ASSETS = [
   './js/color.js',
   './js/audio.js',
   './js/storage.js',
+  './js/i18n.js',
   './icons/icon-180.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -33,11 +42,31 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Allow the page to tell a waiting worker to activate immediately.
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 // Cache-first for same-origin assets; network for everything else (fonts).
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
+
+  // Navigations (the HTML document): network-first so shell updates show up
+  // promptly online; fall back to the cached shell offline.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request).then((resp) => {
+        const copy = resp.clone();
+        caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => {});
+        return resp;
+      }).catch(() =>
+        caches.match(request).then((cached) => cached || caches.match('./index.html')),
+      ),
+    );
+    return;
+  }
 
   if (url.origin === location.origin) {
     event.respondWith(

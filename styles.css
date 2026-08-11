@@ -9,6 +9,13 @@
   font-family: "Baloo 2", system-ui, -apple-system, sans-serif;
 }
 
+/* Baloo 2 has no Hebrew glyphs — use rounded Fredoka for Hebrew, keep Baloo 2
+   for English. Applied by the document's lang/dir (set before first paint). */
+[lang="he"], [dir="rtl"],
+[lang="he"] body, [dir="rtl"] body {
+  font-family: "Fredoka", "Baloo 2", system-ui, -apple-system, sans-serif;
+}
+
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 /* The hidden attribute must win over explicit display (rows, buttons). */
@@ -269,3 +276,21 @@ html, body {
 .dbtn.left  { grid-column: 1; grid-row: 2; }
 .dbtn.right { grid-column: 3; grid-row: 2; }
 .dbtn.down  { grid-column: 2; grid-row: 3; }
+
+/* ---- RTL chrome mirroring (Hebrew) ----
+   Only pinned CHROME swaps sides. The D-pad, canvas board, snake heading and
+   swipe/movement directions are GAMEPLAY and are deliberately NOT mirrored:
+   "left" always moves left and "right" always moves right in every language. */
+
+/* Keep the D-pad's internal column order fixed (LTR) even under dir=rtl so the
+   ◀ button stays physically on the left and ▶ on the right — a movement control
+   must never mirror. Only its glyphs/labels convey direction. */
+#dpad { direction: ltr; }
+
+/* Best badge pins to the right, gear to the left. */
+[dir="rtl"] .best-badge { left: auto; right: 20px; }
+[dir="rtl"] .gear { right: auto; left: 16px; }
+
+/* Toggle knob travels from the right edge instead of the left. */
+[dir="rtl"] .toggle .knob { left: auto; right: 3px; transition: right 0.15s ease; }
+[dir="rtl"] .toggle.on .knob { right: 27px; left: auto; }

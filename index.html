@@ -14,8 +14,27 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    // Early locale bootstrap so RTL/dir is correct before first paint (no flash).
+    // Full resolution + persistence happens in js/i18n.js on module load.
+    (function () {
+      try {
+        var valid = { en: 1, he: 1 };
+        var q = new URLSearchParams(location.search).get('lang');
+        var lang = (q && valid[q]) ? q : localStorage.getItem('lang');
+        if (!lang || !valid[lang]) {
+          var nav = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+          nav = String(nav).toLowerCase();
+          lang = (nav.indexOf('he') === 0 || nav.indexOf('iw') === 0) ? 'he' : 'en';
+        }
+        var el = document.documentElement;
+        el.lang = lang;
+        el.dir = lang === 'he' ? 'rtl' : 'ltr';
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
 </head>
 <body>
   <div id="safe-probe" aria-hidden="true"></div>
@@ -28,64 +47,65 @@
       <span class="best-value" id="hud-best">0</span>
     </div>
     <div class="score" id="hud-score">0</div>
-    <button class="gear" id="gear" aria-label="Settings">⚙︎</button>
+    <button class="gear" id="gear" data-i18n-aria="settingsAria" aria-label="Settings">⚙︎</button>
   </header>
 
-  <!-- On-screen D-pad (alternative to swipe) -->
-  <div id="dpad" aria-label="Direction pad">
-    <button class="dbtn up" data-dir="up" aria-label="Up">▲</button>
-    <button class="dbtn left" data-dir="left" aria-label="Left">◀</button>
-    <button class="dbtn right" data-dir="right" aria-label="Right">▶</button>
-    <button class="dbtn down" data-dir="down" aria-label="Down">▼</button>
+  <!-- On-screen D-pad (alternative to swipe). NOT mirrored in RTL — it is a
+       movement control (gameplay): left always moves left, right always right. -->
+  <div id="dpad" data-i18n-aria="directionPadAria" aria-label="Direction pad">
+    <button class="dbtn up" data-dir="up" data-i18n-aria="upAria" aria-label="Up">▲</button>
+    <button class="dbtn left" data-dir="left" data-i18n-aria="leftAria" aria-label="Left">◀</button>
+    <button class="dbtn right" data-dir="right" data-i18n-aria="rightAria" aria-label="Right">▶</button>
+    <button class="dbtn down" data-dir="down" data-i18n-aria="downAria" aria-label="Down">▼</button>
   </div>
 
   <!-- Settings overlay -->
   <div class="overlay" id="settings-overlay" hidden>
     <div class="scrim" data-dismiss="settings"></div>
-    <div class="panel" role="dialog" aria-label="Settings">
-      <h2>Settings</h2>
+    <div class="panel" role="dialog" data-i18n-aria="settingsAria" aria-label="Settings">
+      <h2 data-i18n="settings">Settings</h2>
       <p class="panel-best" id="settings-best">Best score: 0</p>
 
       <div class="row">
-        <span class="row-label">Speed</span>
+        <span class="row-label" data-i18n="speed">Speed</span>
         <div class="segmented" id="difficulty-seg">
-          <button data-diff="calm">Calm</button>
-          <button data-diff="normal">Normal</button>
+          <button data-diff="calm" data-i18n="calm">Calm</button>
+          <button data-diff="normal" data-i18n="normal">Normal</button>
         </div>
       </div>
 
       <div class="row">
-        <span class="row-label">Walls</span>
-        <button class="toggle" id="toggle-walls" role="switch" aria-label="Solid walls"><span class="knob"></span></button>
+        <span class="row-label" data-i18n="walls">Walls</span>
+        <button class="toggle" id="toggle-walls" role="switch" data-i18n-aria="wallsAria" aria-label="Solid walls"><span class="knob"></span></button>
       </div>
 
       <div class="row">
-        <span class="row-label">Sound</span>
+        <span class="row-label" data-i18n="sound">Sound</span>
         <button class="toggle" id="toggle-sound" role="switch"><span class="knob"></span></button>
       </div>
 
       <div class="row">
-        <span class="row-label">Vibration</span>
+        <span class="row-label" data-i18n="vibration">Vibration</span>
         <button class="toggle" id="toggle-haptics" role="switch"><span class="knob"></span></button>
       </div>
 
-      <button class="btn primary" id="btn-new-game">New Game</button>
-      <button class="btn danger" id="btn-reset-best">Reset Best Score</button>
-      <a class="btn secondary" id="btn-back-hub" hidden>← Back to Games</a>
-      <button class="btn secondary" id="btn-close">Close</button>
+      <button class="btn primary" id="btn-new-game" data-i18n="newGame">New Game</button>
+      <button class="btn danger" id="btn-reset-best" data-i18n="resetBest">Reset Best Score</button>
+      <a class="btn secondary" id="btn-back-hub" data-i18n="backToGames" hidden>← Back to Games</a>
+      <button class="btn secondary" id="btn-close" data-i18n="close">Close</button>
     </div>
   </div>
 
   <!-- Soft round-over overlay -->
   <div class="overlay" id="gameover-overlay" hidden>
     <div class="scrim"></div>
-    <div class="panel gameover" role="dialog" aria-label="Round over">
+    <div class="panel gameover" role="dialog" data-i18n-aria="roundOverAria" aria-label="Round over">
       <div class="go-emoji" id="go-emoji">🐍</div>
       <h2 id="go-title">Oops!</h2>
-      <p class="go-caption">Your score</p>
+      <p class="go-caption" id="go-caption" data-i18n="yourScore">Your score</p>
       <div class="go-score" id="go-score">0</div>
       <p class="go-best" id="go-best">👑 Best: 0</p>
-      <button class="btn primary" id="btn-play-again">Play Again</button>
+      <button class="btn primary" id="btn-play-again" data-i18n="playAgain">Play Again</button>
     </div>
   </div>
 
