@@ -8,7 +8,7 @@
 //    online, falling back to cache offline). Other same-origin assets are
 //    cache-first against the versioned cache. The paired registration in
 //    main.js reloads the page on controllerchange so users get the new build.
-const CACHE = 'snake-v4';
+const CACHE = 'snake-v5';
 
 const ASSETS = [
   './',
