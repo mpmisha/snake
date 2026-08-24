@@ -10,6 +10,14 @@ can't lose except by running into their own tail.
 Part of the shared Playground design system: **Baloo 2**, the `#20264f` twilight
 palette, and the beveled-candy block look.
 
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/gameplay.png" width="30%" alt="Snake mid-game — a short candy-green snake heading toward a glossy treat on the grid">
+  <img src="docs/screenshots/grown.png" width="30%" alt="A long grown Snake winding across the board at a higher score">
+  <img src="docs/screenshots/settings.png" width="30%" alt="Snake settings panel with speed, sound and vibration options">
+</p>
+
 ## How to play
 - **Swipe** up / down / left / right to steer — or tap the big **on-screen D-pad
   arrows**. Turns are buffered so a slightly-early swipe still counts.
